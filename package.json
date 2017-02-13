@@ -3,7 +3,8 @@
   "version": "0.0.2",
   "private": true,
   "scripts": {
-    "start": "node server.js"
+    "start": "node server",
+    "test": "mocha tests"
   },
   "author": {
     "name": "William"
@@ -19,6 +20,6 @@
     "morgan": "~1.7.0",
     "mysql": "^2.13.0",
     "passport": "^0.3.2",
-    "sequelize": "^3.30.2",
+    "sequelize": "^3.30.2"
   }
 }
