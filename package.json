@@ -6,9 +6,10 @@
     "start": "node server.js"
   },
   "author": {
-    "name":"William"
+    "name": "William"
   },
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "body-parser": "~1.16.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.0",
@@ -17,7 +18,6 @@
     "jade": "~1.11.0",
     "morgan": "~1.7.0",
     "mysql": "^2.13.0",
-    "oauth2orize": "^1.7.0",
     "passport": "^0.3.2",
     "sequelize": "^3.30.2",
     "serve-favicon": "~2.3.2"

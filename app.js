@@ -1,3 +1,4 @@
+var bcrypt = require('bcrypt');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -11,22 +12,32 @@ var users = require('./routes/users');
 var Sequelize = require('sequelize');
 var sequelize = new Sequelize('node','root','mk28to#$',{});
 
-/* Sequelize models: movies and users */
+/* Sequelize models: movies and users, with appropriate hashing for password */
 var User = sequelize.define('user',{
-    firstName: { type: Sequelize.STRING },
-    lastName: { type: Sequelize.STRING }
+    name: { type: Sequelize.STRING },
+    email: { type: Sequelize.STRING },
+    password: {
+        type: Sequelize.STRING,
+        set: function(password){
+            var salt = bcrypt.genSaltSync(10);
+            console.log(salt);
+            console.log(bcrypt.hashSync(password,salt));
+            this.setDataValue('password',bcrypt.hashSync(password,salt));
+        },
+    }
 });
 
-// Force write: in true, will drop the table if it already exists
+// Force write: in true, will drop the table if it already exists; execute query to test
 User.sync({force: true}).then(function(){
-    return User.create({
-        firstName:'Don',
-        lastName:'Draper'
+    User.create({
+        name: 'Jack',
+        email: 'jack@default.com',
+        password: 'passwd',
+    }).then(function(){
+        User.findAll().then(function(users){
+            console.log(users);
+        });
     });
-});
-
-User.findAll().then(function(users){
-    console.log(users);
 });
 
 var app = express();
