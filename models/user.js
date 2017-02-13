@@ -1,9 +1,10 @@
 var Sequelize = require('sequelize');
+var epilogue = require('epilogue');
 var bcrypt = require('bcrypt');
 
 /* Sequelize models: movies and users, with appropriate hashing for password */
 module.exports = function(database,DataTypes){
-    var User = database.define('user',{
+    return database.define('user',{
         name: { type: Sequelize.STRING },
         email: { type: Sequelize.STRING },
         password: {
@@ -16,5 +17,4 @@ module.exports = function(database,DataTypes){
             },
         },
     });
-    return User;
 };
