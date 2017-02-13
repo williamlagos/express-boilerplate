@@ -1,4 +1,3 @@
-var bcrypt = require('bcrypt');
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
@@ -6,58 +5,27 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var epilogue = require('epilogue');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
+var database = require('./models').database;
+var Movie = require('./models/movie').Movie;
+var User = require('./models/user').User;
 
-var Sequelize = require('sequelize');
-var sequelize = new Sequelize('node','root','mk28to#$',{ logging:console.log });
-
-/* Sequelize models: movies and users, with appropriate hashing for password */
-var User = sequelize.define('user',{
-    name: { type: Sequelize.STRING },
-    email: { type: Sequelize.STRING },
-    password: {
-        type: Sequelize.STRING,
-        set: function(password){
-            var salt = bcrypt.genSaltSync(10);
-            console.log(salt);
-            console.log(bcrypt.hashSync(password,salt));
-            this.setDataValue('password',bcrypt.hashSync(password,salt));
-        },
-    }
-});
-
-var Movie = sequelize.define('movie',{
-    title: { type: Sequelize.STRING },
-    director: { type: Sequelize.STRING },
-    quantity: { type: Sequelize.INTEGER }
-});
-
-Movie.belongsTo(User);
-
-// Force write: in true, will drop the table if it already exists; execute query to test
-User.sync({force: true}).then(function(){
-    User.create({
-        name: 'Jack',
-        email: 'jack@default.com',
-        password: 'passwd',
-    });/*.then(function(){
-        User.findAll().then(function(users){
-            console.log(users);
-        });
-    });*/
-});
+database.sync({ force: true });
 
 var app = express();
 
 epilogue.initialize({
     app: app,
-    sequelize: sequelize
+    sequelize: database
 });
 
 var userResource = epilogue.resource({
     model: User,
     endpoints:['/users','/users/:id']
+});
+
+var movieResource = epilogue.resource({
+    model: Movie,
+    endpoints:['/movies','/movies/:id']
 });
 
 app.use(logger('dev'));
@@ -88,3 +56,4 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+exports.database = database;
