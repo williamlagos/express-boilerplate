@@ -5,12 +5,13 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var epilogue = require('epilogue');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 
 var Sequelize = require('sequelize');
-var sequelize = new Sequelize('node','root','mk28to#$',{});
+var sequelize = new Sequelize('node','root','mk28to#$',{ logging:console.log });
 
 /* Sequelize models: movies and users, with appropriate hashing for password */
 var User = sequelize.define('user',{
@@ -41,14 +42,24 @@ User.sync({force: true}).then(function(){
         name: 'Jack',
         email: 'jack@default.com',
         password: 'passwd',
-    }).then(function(){
+    });/*.then(function(){
         User.findAll().then(function(users){
             console.log(users);
         });
-    });
+    });*/
 });
 
 var app = express();
+
+epilogue.initialize({
+    app: app,
+    sequelize: sequelize
+});
+
+var userResource = epilogue.resource({
+    model: User,
+    endpoints:['/users','/users/:id']
+});
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
