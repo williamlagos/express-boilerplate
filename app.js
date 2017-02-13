@@ -8,6 +8,27 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 
+var Sequelize = require('sequelize');
+var sequelize = new Sequelize('node','root','mk28to#$',{});
+
+/* Sequelize models: movies and users */
+var User = sequelize.define('user',{
+    firstName: { type: Sequelize.STRING },
+    lastName: { type: Sequelize.STRING }
+});
+
+// Force write: in true, will drop the table if it already exists
+User.sync({force: true}).then(function(){
+    return User.create({
+        firstName:'Don',
+        lastName:'Draper'
+    });
+});
+
+User.findAll().then(function(users){
+    console.log(users);
+});
+
 var app = express();
 
 // view engine setup
