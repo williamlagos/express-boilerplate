@@ -27,6 +27,14 @@ var User = sequelize.define('user',{
     }
 });
 
+var Movie = sequelize.define('movie',{
+    title: { type: Sequelize.STRING },
+    director: { type: Sequelize.STRING },
+    quantity: { type: Sequelize.INTEGER }
+});
+
+Movie.belongsTo(User);
+
 // Force write: in true, will drop the table if it already exists; execute query to test
 User.sync({force: true}).then(function(){
     User.create({
@@ -41,10 +49,6 @@ User.sync({force: true}).then(function(){
 });
 
 var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
