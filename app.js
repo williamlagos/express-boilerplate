@@ -26,7 +26,12 @@ var database = new Sequelize(
     config.database.name,
     config.database.user,
     config.database.password,
-    { logging:console.log });
+    {
+        logging:console.log,
+        dialect:'sqlite',
+        storage:'boilerplate.db'
+    }
+);
 
 var User = database.import(__dirname+"/models/user");
 var Movie = database.import(__dirname+"/models/movie");
